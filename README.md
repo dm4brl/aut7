@@ -36,6 +36,39 @@
 ├── README.md         # Документация проекта
 ```
 
+## **Схема базы данных**
+```sql
+CREATE TABLE devices (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    location TEXT,
+    status BOOLEAN DEFAULT FALSE,
+    last_updated TIMESTAMP DEFAULT now()
+);
+
+CREATE TABLE schedules (
+    id SERIAL PRIMARY KEY,
+    device_id INT REFERENCES devices(id),
+    event_time TIMESTAMP NOT NULL,
+    action TEXT CHECK (action IN ('ON', 'OFF')),
+    created_at TIMESTAMP DEFAULT now()
+);
+
+CREATE TABLE events (
+    id SERIAL PRIMARY KEY,
+    device_id INT REFERENCES devices(id),
+    event_time TIMESTAMP DEFAULT now(),
+    action TEXT CHECK (action IN ('ON', 'OFF')),
+    status TEXT CHECK (status IN ('SUCCESS', 'FAILED'))
+);
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL
+);
+```
+
 ## **Установка и запуск**
 ```sh
 git clone https://github.com/yourrepo/lighting-control.git
@@ -49,6 +82,11 @@ docker-compose up -d  # Запуск локальной среды
 - [ ] Подключение Kafka и обработка событий
 - [ ] Настройка TimescaleDB
 - [ ] Мониторинг через Prometheus и Grafana
+
+---
+С Б-гом!
+
+
 
 ---
 С Б-гом!
